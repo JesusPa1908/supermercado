@@ -63,14 +63,30 @@ class ProductoController {
             $this->producto->precio = $_POST['precio'] ?? 0;
             $this->producto->disponible = $_POST['disponible'] ?? 'SI';
 
+            // Depuración: verificar que los datos se reciban
+            if (empty($this->producto->id_producto)) {
+                $_SESSION['mensaje'] = 'Error: ID de producto no válido';
+                $_SESSION['tipo_mensaje'] = 'error';
+                header('Location: index.php');
+                exit;
+            }
+
             if ($this->producto->actualizar()) {
                 $_SESSION['mensaje'] = 'Producto actualizado exitosamente';
                 $_SESSION['tipo_mensaje'] = 'success';
             } else {
-                $_SESSION['mensaje'] = 'Error al actualizar el producto';
-                $_SESSION['tipo_mensaje'] = 'error';
+                // Si no hay mensaje de error de SQL, usar uno genérico
+                if (!isset($_SESSION['mensaje'])) {
+                    $_SESSION['mensaje'] = 'Error al actualizar el producto';
+                    $_SESSION['tipo_mensaje'] = 'error';
+                }
             }
             
+            header('Location: index.php');
+            exit;
+        } else {
+            $_SESSION['mensaje'] = 'Método no permitido';
+            $_SESSION['tipo_mensaje'] = 'error';
             header('Location: index.php');
             exit;
         }

@@ -30,20 +30,30 @@ class Producto {
      * @return bool
      */
     public function leerUno() {
-        $query = "SELECT * FROM " . $this->table . " WHERE id_producto = :id_producto LIMIT 1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_producto', $this->id_producto, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
+        // Para SQL Server: usar consulta preparada correctamente
+        $query = "SELECT TOP 1 * FROM " . $this->table . " WHERE id_producto = ?";
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$this->id_producto]);
+            
+            // SQL Server puede devolver -1 en rowCount(), usar fetch() directamente
             $row = $stmt->fetch();
-            $this->nombre = $row['nombre'];
-            $this->categoria = $row['categoria'];
-            $this->precio = $row['precio'];
-            $this->disponible = $row['disponible'];
-            return true;
+            if ($row) {
+                $this->nombre = $row['nombre'];
+                $this->categoria = $row['categoria'];
+                $this->precio = $row['precio'];
+                // Convertir bit (0/1) a 'SI'/'NO' para compatibilidad con formularios
+                $this->disponible = ($row['disponible'] == 1) ? 'SI' : 'NO';
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            // Para depuración: mostrar el error SQL
+            error_log("Error SQL en leerUno: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     /**
@@ -51,27 +61,23 @@ class Producto {
      * @return bool
      */
     public function crear() {
-        $query = "INSERT INTO " . $this->table . " (nombre, categoria, precio, disponible) 
-                  VALUES (:nombre, :categoria, :precio, :disponible)";
-        
-        $stmt = $this->conn->prepare($query);
-
         // Limpiar datos
-        $this->nombre = htmlspecialchars(strip_tags($this->nombre));
-        $this->categoria = htmlspecialchars(strip_tags($this->categoria));
-        $this->precio = htmlspecialchars(strip_tags($this->precio));
-        $this->disponible = htmlspecialchars(strip_tags($this->disponible));
+        $nombre = htmlspecialchars(strip_tags($this->nombre));
+        $categoria = htmlspecialchars(strip_tags($this->categoria));
+        $precio = htmlspecialchars(strip_tags($this->precio));
+        
+        // Convertir 'SI'/'NO' a 1/0 para SQL Server (tipo bit)
+        $disponible_bit = ($this->disponible === 'SI') ? 1 : 0;
 
-        // Vincular parámetros
-        $stmt->bindParam(':nombre', $this->nombre);
-        $stmt->bindParam(':categoria', $this->categoria);
-        $stmt->bindParam(':precio', $this->precio);
-        $stmt->bindParam(':disponible', $this->disponible);
+        // Usar consulta preparada
+        $query = "INSERT INTO " . $this->table . " (nombre, categoria, precio, disponible) VALUES (?, ?, ?, ?)";
 
-        if ($stmt->execute()) {
-            return true;
+        try {
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute([$nombre, $categoria, $precio, $disponible_bit]);
+        } catch (PDOException $e) {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -79,33 +85,28 @@ class Producto {
      * @return bool
      */
     public function actualizar() {
-        $query = "UPDATE " . $this->table . " 
-                  SET nombre = :nombre, 
-                      categoria = :categoria, 
-                      precio = :precio, 
-                      disponible = :disponible
-                  WHERE id_producto = :id_producto";
-        
-        $stmt = $this->conn->prepare($query);
-
         // Limpiar datos
-        $this->nombre = htmlspecialchars(strip_tags($this->nombre));
-        $this->categoria = htmlspecialchars(strip_tags($this->categoria));
-        $this->precio = htmlspecialchars(strip_tags($this->precio));
-        $this->disponible = htmlspecialchars(strip_tags($this->disponible));
-        $this->id_producto = htmlspecialchars(strip_tags($this->id_producto));
+        $nombre = htmlspecialchars(strip_tags($this->nombre));
+        $categoria = htmlspecialchars(strip_tags($this->categoria));
+        $precio = htmlspecialchars(strip_tags($this->precio));
+        
+        // Convertir 'SI'/'NO' a 1/0 para SQL Server (tipo bit)
+        $disponible_bit = ($this->disponible === 'SI') ? 1 : 0;
 
-        // Vincular parámetros
-        $stmt->bindParam(':nombre', $this->nombre);
-        $stmt->bindParam(':categoria', $this->categoria);
-        $stmt->bindParam(':precio', $this->precio);
-        $stmt->bindParam(':disponible', $this->disponible);
-        $stmt->bindParam(':id_producto', $this->id_producto, PDO::PARAM_INT);
+        // Usar consulta preparada
+        $query = "UPDATE " . $this->table . " 
+                  SET nombre = ?, categoria = ?, precio = ?, disponible = ?
+                  WHERE id_producto = ?";
 
-        if ($stmt->execute()) {
-            return true;
+        try {
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute([$nombre, $categoria, $precio, $disponible_bit, $this->id_producto]);
+        } catch (PDOException $e) {
+            // Para depuración: mostrar el error
+            $_SESSION['mensaje'] = 'Error SQL: ' . $e->getMessage();
+            $_SESSION['tipo_mensaje'] = 'error';
+            return false;
         }
-        return false;
     }
 
     /**
@@ -113,16 +114,15 @@ class Producto {
      * @return bool
      */
     public function eliminar() {
-        $query = "DELETE FROM " . $this->table . " WHERE id_producto = :id_producto";
-        $stmt = $this->conn->prepare($query);
-        
-        $this->id_producto = htmlspecialchars(strip_tags($this->id_producto));
-        $stmt->bindParam(':id_producto', $this->id_producto, PDO::PARAM_INT);
+        // Usar consulta preparada
+        $query = "DELETE FROM " . $this->table . " WHERE id_producto = ?";
 
-        if ($stmt->execute()) {
-            return true;
+        try {
+            $stmt = $this->conn->prepare($query);
+            return $stmt->execute([$this->id_producto]);
+        } catch (PDOException $e) {
+            return false;
         }
-        return false;
     }
 
 }

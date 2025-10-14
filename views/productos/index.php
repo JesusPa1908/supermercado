@@ -1,4 +1,9 @@
 <?php
+// Asegurar que la sesión esté iniciada
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 $controller = new ProductoController();
 
 // Obtener todos los productos
@@ -9,12 +14,20 @@ include __DIR__ . '/../layouts/header.php';
 
 <!-- Mensajes de éxito/error -->
 <?php if (isset($_SESSION['mensaje'])): ?>
-    <div class="alert alert-<?php echo $_SESSION['tipo_mensaje']; ?>">
+    <div class="alert alert-<?php echo $_SESSION['tipo_mensaje']; ?>" style="padding: 15px; margin: 20px 0; border: 2px solid <?php echo $_SESSION['tipo_mensaje'] === 'success' ? '#28a745' : '#dc3545'; ?>; background-color: <?php echo $_SESSION['tipo_mensaje'] === 'success' ? '#d4edda' : '#f8d7da'; ?>; color: <?php echo $_SESSION['tipo_mensaje'] === 'success' ? '#155724' : '#721c24'; ?>; border-radius: 5px;">
+        <strong><?php echo $_SESSION['tipo_mensaje'] === 'success' ? '✅' : '❌'; ?></strong>
         <?php 
         echo $_SESSION['mensaje']; 
         unset($_SESSION['mensaje']);
         unset($_SESSION['tipo_mensaje']);
         ?>
+    </div>
+<?php endif; ?>
+
+<!-- Debug temporal -->
+<?php if (isset($_SESSION['mensaje'])): ?>
+    <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border: 1px solid #ccc;">
+        <strong>DEBUG:</strong> Mensaje encontrado: <?php echo $_SESSION['mensaje']; ?> | Tipo: <?php echo $_SESSION['tipo_mensaje']; ?>
     </div>
 <?php endif; ?>
 
@@ -51,7 +64,7 @@ include __DIR__ . '/../layouts/header.php';
                         </td>
                         <td class="precio">$<?php echo number_format($producto['precio'], 2); ?></td>
                         <td>
-                            <?php if ($producto['disponible'] === 'SI'): ?>
+                            <?php if ($producto['disponible'] == 1 || $producto['disponible'] === 'SI'): ?>
                                 <span class="badge badge-success">Disponible</span>
                             <?php else: ?>
                                 <span class="badge badge-danger">No disponible</span>

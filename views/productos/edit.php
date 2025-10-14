@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../../src/controllers/ProductoController.php';
+
+$controller = new ProductoController();
 $id = $_GET['id'] ?? 0;
 $producto = $controller->edit($id);
 
@@ -70,8 +73,8 @@ include __DIR__ . '/../layouts/header.php';
         <div class="form-group">
             <label for="disponible">Disponibilidad *</label>
             <select id="disponible" name="disponible" class="form-control" required>
-                <option value="SI" <?php echo ($producto->disponible === 'SI') ? 'selected' : ''; ?>>Disponible</option>
-                <option value="NO" <?php echo ($producto->disponible === 'NO') ? 'selected' : ''; ?>>No disponible</option>
+                <option value="SI" <?php echo ($producto->disponible === 'SI' || $producto->disponible == 1) ? 'selected' : ''; ?>>Disponible</option>
+                <option value="NO" <?php echo ($producto->disponible === 'NO' || $producto->disponible == 0) ? 'selected' : ''; ?>>No disponible</option>
             </select>
         </div>
 
