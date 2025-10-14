@@ -11,4 +11,3 @@ try {
 } catch (PDOException $e) {
     echo "❌ Error al conectar: " . $e->getMessage();
 }
-
