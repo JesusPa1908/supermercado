@@ -125,22 +125,5 @@ class Producto {
         return false;
     }
 
-    /**
-     * 
-     * @param string $search
-     * @return PDOStatement
-     */
-    public function buscar($search) {
-        $query = "SELECT * FROM " . $this->table . " 
-                  WHERE nombre LIKE :search OR categoria LIKE :search 
-                  ORDER BY id_producto DESC";
-        
-        $stmt = $this->conn->prepare($query);
-        $search = "%{$search}%";
-        $stmt->bindParam(':search', $search);
-        $stmt->execute();
-        
-        return $stmt;
-    }
 }
 

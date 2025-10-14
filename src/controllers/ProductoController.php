@@ -92,10 +92,5 @@ class ProductoController {
         exit;
     }
 
-    // Buscar productos
-    public function search($search) {
-        $stmt = $this->producto->buscar($search);
-        return $stmt->fetchAll();
-    }
 }
 

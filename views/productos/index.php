@@ -1,13 +1,8 @@
 <?php
 $controller = new ProductoController();
 
-// Búsqueda
-$search = $_GET['search'] ?? '';
-if (!empty($search)) {
-    $productos = $controller->search($search);
-} else {
-    $productos = $controller->index();
-}
+// Obtener todos los productos
+$productos = $controller->index();
 
 include __DIR__ . '/../layouts/header.php';
 ?>
@@ -29,22 +24,6 @@ include __DIR__ . '/../layouts/header.php';
     <a href="<?php echo BASE_URL; ?>index.php?action=create" class="btn btn-primary">+ Nuevo Producto</a>
 </div>
 
-<!-- Barra de busqueda -->
-<div class="search-bar">
-    <form method="GET" action="<?php echo BASE_URL; ?>index.php" class="search-form">
-        <input 
-            type="text" 
-            name="search" 
-            placeholder="Buscar por nombre o categoría..." 
-            value="<?php echo htmlspecialchars($search); ?>"
-            class="search-input"
-        >
-        <button type="submit" class="btn btn-secondary">Buscar</button>
-        <?php if (!empty($search)): ?>
-            <a href="<?php echo BASE_URL; ?>" class="btn btn-light">Limpiar</a>
-        <?php endif; ?>
-    </form>
-</div>
 
 <!-- Tabla de productos -->
 <div class="table-container">
@@ -84,8 +63,7 @@ include __DIR__ . '/../layouts/header.php';
                                 Editar
                             </a>
                             <a href="<?php echo BASE_URL; ?>index.php?action=delete&id=<?php echo $producto['id_producto']; ?>" 
-                               class="btn btn-sm btn-danger"
-                               onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                               class="btn btn-sm btn-danger">
                                 Eliminar
                             </a>
                         </td>
@@ -96,11 +74,7 @@ include __DIR__ . '/../layouts/header.php';
     <?php else: ?>
         <div class="empty-state">
             <p>📦 No se encontraron productos</p>
-            <?php if (!empty($search)): ?>
-                <p>Intenta con otra búsqueda o <a href="<?php echo BASE_URL; ?>">ver todos los productos</a></p>
-            <?php else: ?>
-                <a href="<?php echo BASE_URL; ?>index.php?action=create" class="btn btn-primary">Crear primer producto</a>
-            <?php endif; ?>
+            <a href="<?php echo BASE_URL; ?>index.php?action=create" class="btn btn-primary">Crear primer producto</a>
         </div>
     <?php endif; ?>
 </div>
