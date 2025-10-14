@@ -26,12 +26,12 @@ include __DIR__ . '/../layouts/header.php';
 <!-- Barra de acciones -->
 <div class="page-header">
     <h2>Gestión de Productos</h2>
-    <a href="index.php?action=create" class="btn btn-primary">+ Nuevo Producto</a>
+    <a href="<?php echo BASE_URL; ?>index.php?action=create" class="btn btn-primary">+ Nuevo Producto</a>
 </div>
 
 <!-- Barra de busqueda -->
 <div class="search-bar">
-    <form method="GET" action="index.php" class="search-form">
+    <form method="GET" action="<?php echo BASE_URL; ?>index.php" class="search-form">
         <input 
             type="text" 
             name="search" 
@@ -41,7 +41,7 @@ include __DIR__ . '/../layouts/header.php';
         >
         <button type="submit" class="btn btn-secondary">Buscar</button>
         <?php if (!empty($search)): ?>
-            <a href="index.php" class="btn btn-light">Limpiar</a>
+            <a href="<?php echo BASE_URL; ?>" class="btn btn-light">Limpiar</a>
         <?php endif; ?>
     </form>
 </div>
@@ -79,11 +79,11 @@ include __DIR__ . '/../layouts/header.php';
                             <?php endif; ?>
                         </td>
                         <td class="actions">
-                            <a href="index.php?action=edit&id=<?php echo $producto['id_producto']; ?>" 
+                            <a href="<?php echo BASE_URL; ?>index.php?action=edit&id=<?php echo $producto['id_producto']; ?>" 
                                class="btn btn-sm btn-warning">
                                 Editar
                             </a>
-                            <a href="index.php?action=delete&id=<?php echo $producto['id_producto']; ?>" 
+                            <a href="<?php echo BASE_URL; ?>index.php?action=delete&id=<?php echo $producto['id_producto']; ?>" 
                                class="btn btn-sm btn-danger"
                                onclick="return confirm('¿Estás seguro de eliminar este producto?')">
                                 Eliminar
@@ -97,9 +97,9 @@ include __DIR__ . '/../layouts/header.php';
         <div class="empty-state">
             <p>📦 No se encontraron productos</p>
             <?php if (!empty($search)): ?>
-                <p>Intenta con otra búsqueda o <a href="index.php">ver todos los productos</a></p>
+                <p>Intenta con otra búsqueda o <a href="<?php echo BASE_URL; ?>">ver todos los productos</a></p>
             <?php else: ?>
-                <a href="index.php?action=create" class="btn btn-primary">Crear primer producto</a>
+                <a href="<?php echo BASE_URL; ?>index.php?action=create" class="btn btn-primary">Crear primer producto</a>
             <?php endif; ?>
         </div>
     <?php endif; ?>

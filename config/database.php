@@ -7,5 +7,5 @@ define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 define('APP_NAME', 'Supermercado - Gestión de Productos');
-define('BASE_URL', 'http://localhost/supermerado/');
+define('BASE_URL', 'http://localhost/supermercado/');
 

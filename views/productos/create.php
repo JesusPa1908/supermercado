@@ -2,11 +2,11 @@
 
 <div class="page-header">
     <h2>Crear Nuevo Producto</h2>
-    <a href="index.php" class="btn btn-light">← Volver</a>
+    <a href="<?php echo BASE_URL; ?>" class="btn btn-light">← Volver</a>
 </div>
 
 <div class="form-container">
-    <form method="POST" action="index.php?action=store" class="form" id="productoForm">
+    <form method="POST" action="<?php echo BASE_URL; ?>index.php?action=store" class="form" id="productoForm">
         <div class="form-group">
             <label for="nombre">Nombre del Producto *</label>
             <input 
@@ -65,7 +65,7 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Guardar Producto</button>
-            <a href="index.php" class="btn btn-light">Cancelar</a>
+            <a href="<?php echo BASE_URL; ?>" class="btn btn-light">Cancelar</a>
         </div>
     </form>
 </div>

@@ -12,11 +12,11 @@ include __DIR__ . '/../layouts/header.php';
 
 <div class="page-header">
     <h2>Editar Producto</h2>
-    <a href="index.php" class="btn btn-light">← Volver</a>
+    <a href="<?php echo BASE_URL; ?>" class="btn btn-light">← Volver</a>
 </div>
 
 <div class="form-container">
-    <form method="POST" action="index.php?action=update" class="form" id="productoForm">
+    <form method="POST" action="<?php echo BASE_URL; ?>index.php?action=update" class="form" id="productoForm">
         <input type="hidden" name="id_producto" value="<?php echo htmlspecialchars($producto->id_producto); ?>">
         
         <div class="form-group">
@@ -77,7 +77,7 @@ include __DIR__ . '/../layouts/header.php';
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Actualizar Producto</button>
-            <a href="index.php" class="btn btn-light">Cancelar</a>
+            <a href="<?php echo BASE_URL; ?>" class="btn btn-light">Cancelar</a>
         </div>
     </form>
 </div>
